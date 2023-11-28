@@ -43,25 +43,59 @@ class RandomWordsState extends State<RandomWords> {
           setState(() {
             if (alreadySaved) {
               _savedWordPairs.remove(pair);
-
-            }else{
+            } else {
               _savedWordPairs.add(pair);
             }
           });
         });
   }
 
+  void _pushSaved() {
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (BuildContext context) {
+      // creating a  list of tile widgets from the word pairs
+      final Iterable<ListTile> tiles = _savedWordPairs.map((WordPair pair) {
+        return ListTile(
+            title: Text(
+          pair.asPascalCase,
+          style: const TextStyle(fontSize: 16.0),
+        ));
+      });
+
+      // creating a list of Widgets(this is the list of Tile widgetd plus  some dividers)
+      final List<Widget> divided =
+          ListTile.divideTiles(context: context, tiles: tiles).toList();
+      // the Builder has to return something(could be the screen you want to display)
+      return Scaffold(
+          appBar: AppBar(
+            title: const Text(
+              "Saved WordPairs",
+              style: TextStyle(color: Colors.white),
+            ),
+            backgroundColor: Colors.deepPurple[900],
+          ),
+          body: ListView(
+            children: divided,
+          ));
+    }));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text(
-            "WordPair Generator",
-            style: TextStyle(color: Colors.white),
-            textAlign: TextAlign.center,
-          ),
-          backgroundColor: Colors.deepPurple[900],
-        ),
+            title: const Text(
+              "WordPair Generator",
+              style: TextStyle(color: Colors.white),
+              textAlign: TextAlign.center,
+            ),
+            backgroundColor: Colors.deepPurple[900],
+            actions: <Widget>[
+              IconButton(
+                  icon: const Icon(Icons.list),
+                  onPressed: _pushSaved,
+                  color: Colors.white)
+            ]),
         body: _buildList());
   }
 }
